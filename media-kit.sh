@@ -61,14 +61,33 @@ _html_server_index() {
 	# Output HTML file
 	OUTPUT="./index.html"
 
+	# Arrays to hold categories
+	arm_images=()
+	conf_images=()
+	other_images=()
+
+	shopt -s nullglob
+	for file in "$SVG_DIR"/*.svg; do
+		[[ -e "$file" ]] || continue
+		name=$(basename "$file" .svg)
+		if [[ $name == arm* ]]; then
+			arm_images+=("$file")
+		elif [[ $name == conf* ]]; then
+			conf_images+=("$file")
+		else
+			other_images+=("$file")
+		fi
+	done
+	shopt -u nullglob
+
 	{
 	echo "<!DOCTYPE html>"
 	echo "<html><head>"
-	echo "<meta charset='UTF-8'><title>Armbian Logos</title>"
+	echo "<meta charset='UTF-8'><title>Armbian Media Kit</title>"
 	echo "<style>
-	body { background: #ffffff; color: #000000; font-family: sans-serif; margin: 0; }
-	header { background: #23262f; color: #fff; padding: 0.3rem 1rem; display: flex; align-items: left; justify-content: left; min-height: 56px; }
-	header .header-logo { display: flex; align-items: left; gap: 1em; padding: 0.1rem }
+	body { background: #fff; color: #000; font-family: sans-serif; margin: 0; }
+	header { background: #23262f; color: #fff; padding: 0.3rem 1rem; display: flex; align-items: center; min-height: 56px; }
+	header .header-logo { display: flex; gap: 1em; padding: 0.1rem }
 	header a { display: inline-block; }
 	header img { vertical-align: middle; height: 64px; width: auto; }
 	footer { background: #23262f; color: #fff; padding: 1rem 2rem; text-align: center; font-size: 0.9em; }
@@ -77,6 +96,10 @@ _html_server_index() {
 	hr { border: 0; border-bottom: 1px solid #353535; margin: 2em 0; }
 	a { color: #3ea6ff; }
 	ul { padding-left: 1.2em; }
+	.flex-row { display: flex; justify-content: space-between; gap: 3em; }
+	.flex-col { display: flex; flex-direction: column; gap: 1.5em; }
+	.center { text-align: center; }
+	.media-group { margin-bottom: 2em; }
 	</style>"
 	echo "</head><body>"
 	echo "<header>"
@@ -92,20 +115,57 @@ _html_server_index() {
 	echo "<main>"
 	echo "<p>We've put together some logos and icons for you to use in your articles and projects.</p>"
 
-	local SIZES=(16 32 64 128 256 512)
-	for file in "$SVG_DIR"/*.svg; do
-		[[ -e "$file" ]] || continue
+	# Flex row for left (arm), right (conf)
+	echo "<div class=\"flex-row\">"
+	# Left: arm*
+	echo "<div class=\"flex-col media-group\" style=\"flex:1\"><h3 class=\"center\">Armbian Logos</h3>"
+	for file in "${arm_images[@]}"; do
 		name=$(basename "$file" .svg)
-		echo "<hr>"
 		echo "<a href=\"$file\">"
 		echo "  <img src=\"$file\" alt=\"$name.svg\" width=\"64\" height=\"64\">"
 		echo "</a>"
 		echo "<p>Download PNG:</p><ul>"
-		for sz in "${SIZES[@]}"; do
-			echo "  <li><a href=\"icons/${sz}x${sz}/${name}.png\">${sz}x${sz} ${name}.png</a></li>"
+		for sz in 16 32 64 128 256 512; do
+			echo "<li><a href=\"icons/${sz}x${sz}/${name}.png\">${sz}x${sz} ${name}.png</a></li>"
 		done
-		echo "</ul>"
+		echo "</ul><hr>"
 	done
+	echo "</div>"
+
+	# Right: conf*
+	echo "<div class=\"flex-col media-group\" style=\"flex:1\"><h3 class=\"center\">Config Logos</h3>"
+	for file in "${conf_images[@]}"; do
+		name=$(basename "$file" .svg)
+		echo "<a href=\"$file\">"
+		echo "  <img src=\"$file\" alt=\"$name.svg\" width=\"64\" height=\"64\">"
+		echo "</a>"
+		echo "<p>Download PNG:</p><ul>"
+		for sz in 16 32 64 128 256 512; do
+			echo "<li><a href=\"icons/${sz}x${sz}/${name}.png\">${sz}x${sz} ${name}.png</a></li>"
+		done
+		echo "</ul><hr>"
+	done
+	echo "</div>"
+	echo "</div>"
+
+	# Bottom: rest
+	if (( ${#other_images[@]} )); then
+		echo "<div class=\"media-group\"><h3 class=\"center\">Other Logos & Icons</h3><div class=\"flex-row\" style=\"flex-wrap:wrap;justify-content:center;gap:2em;\">"
+		for file in "${other_images[@]}"; do
+			name=$(basename "$file" .svg)
+			echo "<div style=\"text-align:center\">"
+			echo "<a href=\"$file\">"
+			echo "  <img src=\"$file\" alt=\"$name.svg\" width=\"64\" height=\"64\">"
+			echo "</a>"
+			echo "<p>Download PNG:</p><ul>"
+			for sz in 16 32 64 128 256 512; do
+				echo "<li><a href=\"icons/${sz}x${sz}/${name}.png\">${sz}x${sz} ${name}.png</a></li>"
+			done
+			echo "</ul>"
+			echo "</div>"
+		done
+		echo "</div></div>"
+	fi
 
 	echo "</main>"
 	cat <<EOF
