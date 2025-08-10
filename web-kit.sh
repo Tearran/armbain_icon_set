@@ -102,7 +102,7 @@ _html_server_index() {
 		echo "</a>"
 		echo "<p>Download PNG:</p><ul>"
 		for sz in "${SIZES[@]}"; do
-			echo "  <li><a href=\"share/icons/hicolor/${sz}x${sz}/${name}.png\">${sz}x${sz} ${name}.png</a></li>"
+			echo "  <li><a href=\"icons/${sz}x${sz}/${name}.png\">${sz}x${sz} ${name}.png</a></li>"
 		done
 		echo "</ul>"
 	done
@@ -111,7 +111,6 @@ _html_server_index() {
 	cat <<EOF
 	<footer>
 		Armbian Config V2 &copy; $(date +%Y) | Powered by open source<br>
-		All logos are licensed under the <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.
 	</footer>
 EOF
 	echo "</body></html>"
