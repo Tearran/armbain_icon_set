@@ -11,7 +11,6 @@ html_server() {
 		index)
 			# Generate an HTML index of SVG files
 			_html_server_index
-			[[ "${2:-}" == "serve" ]] && _html_server_main
 			;;
 		icon)
 			# Generate a set of icons from SVG files
@@ -20,6 +19,11 @@ html_server() {
 		server)
 			# Start a simple HTTP server using Python
 			_html_server_main "${2:-.}"
+			;;
+		"")
+			_icon_set_from_svg
+			_html_server_index
+			_html_server_main
 			;;
 		*)
 			_about_html_server
