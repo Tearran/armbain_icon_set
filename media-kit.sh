@@ -243,25 +243,39 @@ for svg in "${svg_files[@]}"; do
 done
 
 }
+
+
 _about_html_server() {
 	cat <<EOF
 Usage: html_server <command> [options]
 
 Commands:
-
-    help    - Show this help message
-    icon    - Generate PNG icon set from SVGs
-    index   - Generate HTML index of SVGs and icons
-    server  - Serve the HTML/Icons with a simple HTTP server
+    help    - Show this help message.
+    icon    - Generate a PNG icon set from SVG files in ./images/scalable.
+    index   - Generate an HTML media kit index of all SVGs and icons.
+    server  - Serve the HTML and icon directory using a simple HTTP server.
 
 Examples:
-	# Show help
-	html_server help
+    # Show help
+    html_server help
+
+    # Generate icons from SVGs
+    html_server icon
+
+    # Generate the HTML media kit
+    html_server index
+
+    # Generate the HTML and start the server
+    html_server index serve
+
+    # Start the server (serves current directory by default)
+    html_server server [directory]
 
 Notes:
-	- All commands accept '--help', '-h', or 'help' for details, if implemented.
-	- Intended for use with the config-v2 menu and scripting.
-	- Keep this help message up to date if commands change.
+    - All commands accept '--help', '-h', or 'help' for details, if implemented.
+    - This tool is intended for use with the Armbian Config V2 menu and for scripting.
+    - Please keep this help message up to date if commands or behavior change.
+    - SVGs should be placed in ./images/scalable for indexing and icon generation.
 
 EOF
 }
