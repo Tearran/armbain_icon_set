@@ -66,11 +66,11 @@ _html_server_index() {
 	echo "<html><head>"
 	echo "<meta charset='UTF-8'><title>Armbian Logos</title>"
 	echo "<style>
-	body { background: #181a20; color: #eee; font-family: sans-serif; margin: 0; }
-	header { background: #23262f; color: #fff; padding: 0.3rem 1rem; display: flex; align-items: center; justify-content: center; min-height: 56px; }
-	header .header-logo { display: flex; align-items: center; gap: 1.5em; }
+	body { background: #ffffff; color: #000000; font-family: sans-serif; margin: 0; }
+	header { background: #23262f; color: #fff; padding: 0.3rem 1rem; display: flex; align-items: left; justify-content: left; min-height: 56px; }
+	header .header-logo { display: flex; align-items: left; gap: 1em; padding: 0.1rem }
 	header a { display: inline-block; }
-	header img { vertical-align: middle; height: 44px; width: auto; }
+	header img { vertical-align: middle; height: 64px; width: auto; }
 	footer { background: #23262f; color: #fff; padding: 1rem 2rem; text-align: center; font-size: 0.9em; }
 	footer a { color: #3ea6ff; }
 	main { padding: 2rem; }
