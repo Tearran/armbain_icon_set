@@ -63,14 +63,34 @@ _html_server_index() {
 
 	{
 	echo "<!DOCTYPE html>"
-	echo "<html><head><meta charset='UTF-8'><title>Armbian logos</title></head><body>"
-	echo "<img src=\"$SVG_DIR/armbian-tux_v1.5.svg\" alt=\"armbian-tux_v1.5.svg\" width=\"128\" height=\"128\">"
-	echo "<img src=\"$SVG_DIR/armbian_logo_v2.svg\" alt=\"armbian_logo_v2.svg\" width=\"512\" height=\"128\">"
-	echo "<h1>Armbian Logos and Icons</h1>"
-
-	cat <<EOF
-	<p>We've put together some logos and icons for you to use in your articles and projects.</p>
-EOF
+	echo "<html><head>"
+	echo "<meta charset='UTF-8'><title>Armbian Logos</title>"
+	echo "<style>
+	body { background: #181a20; color: #eee; font-family: sans-serif; margin: 0; }
+	header { background: #23262f; color: #fff; padding: 0.3rem 1rem; display: flex; align-items: center; justify-content: center; min-height: 56px; }
+	header .header-logo { display: flex; align-items: center; gap: 1.5em; }
+	header a { display: inline-block; }
+	header img { vertical-align: middle; height: 44px; width: auto; }
+	footer { background: #23262f; color: #fff; padding: 1rem 2rem; text-align: center; font-size: 0.9em; }
+	footer a { color: #3ea6ff; }
+	main { padding: 2rem; }
+	hr { border: 0; border-bottom: 1px solid #353535; margin: 2em 0; }
+	a { color: #3ea6ff; }
+	ul { padding-left: 1.2em; }
+	</style>"
+	echo "</head><body>"
+	echo "<header>"
+	echo "  <span class=\"header-logo\">"
+	echo "    <a href=\"https://www.armbian.com/\" target=\"_blank\" rel=\"noopener\">"
+	echo "      <img src=\"$SVG_DIR/armbian-tux_v1.5.svg\" alt=\"armbian-tux_v1.5.svg\">"
+	echo "    </a>"
+	echo "    <a href=\"https://www.armbian.com/\" target=\"_blank\" rel=\"noopener\">"
+	echo "      <img src=\"$SVG_DIR/armbian_logo_v2.svg\" alt=\"armbian_logo_v2.svg\">"
+	echo "    </a>"
+	echo "  </span>"
+	echo "</header>"
+	echo "<main>"
+	echo "<p>We've put together some logos and icons for you to use in your articles and projects.</p>"
 
 	local SIZES=(16 32 64 128 256 512)
 	for file in "$SVG_DIR"/*.svg; do
@@ -82,17 +102,19 @@ EOF
 		echo "</a>"
 		echo "<p>Download PNG:</p><ul>"
 		for sz in "${SIZES[@]}"; do
-		#share/icons/hicolor/
 			echo "  <li><a href=\"share/icons/hicolor/${sz}x${sz}/${name}.png\">${sz}x${sz} ${name}.png</a></li>"
 		done
 		echo "</ul>"
 	done
 
-cat <<EOF
-	<p>All logos are licensed under the <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> license.</p>
-	<p>For more information, please refer to the <a href="https://www.armbian.com/brand/">Armbian Brand Guidelines</a>.</p>
-</body></html>
+	echo "</main>"
+	cat <<EOF
+	<footer>
+		Armbian Config V2 &copy; $(date +%Y) | Powered by open source<br>
+		All logos are licensed under the <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.
+	</footer>
 EOF
+	echo "</body></html>"
 	} > "$OUTPUT"
 
 	echo "HTML file created: $OUTPUT"
@@ -152,12 +174,12 @@ for svg in "${svg_files[@]}"; do
 		# Only generate if missing or source SVG is newer
 		if [[ ! -f "$OUT_FILE" || "$svg" -nt "$OUT_FILE" ]]; then
 			convert -background none -resize ${size}x${size} "$svg" "$OUT_FILE"
-		if [ $? -eq 0 ]; then
-			echo "Generated $OUT_FILE"
-		else
-			echo "Failed to convert $svg to $OUT_FILE"
+			if [ $? -eq 0 ]; then
+				echo "Generated $OUT_FILE"
+			else
+				echo "Failed to convert $svg to $OUT_FILE"
+			fi
 		fi
-	fi
 	done
 done
 
@@ -168,19 +190,17 @@ Usage: html_server <command> [options]
 
 Commands:
 
-    help   - Show this help message
-    icon   - 
-    index  -
-    server -
-     
+    help    - Show this help message
+    icon    - Generate PNG icon set from SVGs
+    index   - Generate HTML index of SVGs and icons
+    server  - Serve the HTML/Icons with a simple HTTP server
 
 Examples:
 	# Show help
-	web-kit help
-
+	html_server help
 
 Notes:
-	- All commands should accept '--help', '-h', or 'help' for details, if implemented.
+	- All commands accept '--help', '-h', or 'help' for details, if implemented.
 	- Intended for use with the config-v2 menu and scripting.
 	- Keep this help message up to date if commands change.
 
